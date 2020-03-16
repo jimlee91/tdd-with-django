@@ -11,13 +11,23 @@
     </h1>
 
     <div class="form">
-      <form action="">
-        <input type="text" id="id_new_item" placeholder="작업 아이템 입력" />
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input
+          type="text"
+          id="id_new_item"
+          name="item_text"
+          placeholder="작업 아이템 입력"
+        />
       </form>
     </div>
 
     <div class="table">
-      <table id="id_list_table"></table>
+      <table id="id_list_table">
+        <tr>
+          <td>1: {{ now_item_text }}</td>
+        </tr>
+      </table>
     </div>
   </body>
 </html>
