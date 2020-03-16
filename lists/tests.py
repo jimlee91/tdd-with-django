@@ -10,6 +10,22 @@ from .models import Item
 # Create your tests here.
 
 
+class ListViewTest(TestCase):
+
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'lists/list.html')
+
+    def test_displays_all_items(self):
+        Item.objects.create(text='양양이는 졸고있군요.')
+        Item.objects.create(text='링고는 양양이 자리를 뺏고, 자고 있어요.')
+
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+
+        self.assertContains(response, '양양이는 졸고있군요.')
+        self.assertContains(response, '링고는 양양이 자리를 뺏고, 자고 있어요.')
+
+
 class ItemModelTest(TestCase):
     def test_saving_and_retrieving_items(self):
         first_item = Item()
@@ -74,13 +90,3 @@ class HomePageTest(TestCase):
         request = HttpRequest()
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
-
-    def test_home_page_displays_all_list_items(self):
-        Item.objects.create(text='양양이는 졸고있군요.')
-        Item.objects.create(text='링고는 양양이 자리를 뺏고, 자고 있어요.')
-
-        request = HttpRequest()
-        response = home_page(request)
-
-        self.assertIn('양양이는 졸고있군요.', response.content.decode())
-        self.assertIn('는 양양이 자리를 뺏고, 자고 있어요.', response.content.decode())
