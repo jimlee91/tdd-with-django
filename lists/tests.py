@@ -10,17 +10,37 @@ from .models import Item
 # Create your tests here.
 
 
+class NewListText(TestCase):
+    def test_saving_a_POST_request(self):
+
+        self.client.post('/lists/new', data={
+            'item_text': '신규 작업 아이템'
+        })
+        self.assertEqual(Item.objects.all().count(), 1)
+
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, '신규 작업 아이템')
+
+    def test_redirects_after_POST(self):
+        response = self.client.post('/lists/new', data={
+            'item_text': '신규 작업 아이템'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'],
+                         reverse('lists:view_list'))
+
+
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        response = self.client.get(reverse('lists:view_list'))
         self.assertTemplateUsed(response, 'lists/list.html')
 
     def test_displays_all_items(self):
         Item.objects.create(text='양양이는 졸고있군요.')
         Item.objects.create(text='링고는 양양이 자리를 뺏고, 자고 있어요.')
 
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        response = self.client.get(reverse('lists:view_list'))
 
         self.assertContains(response, '양양이는 졸고있군요.')
         self.assertContains(response, '링고는 양양이 자리를 뺏고, 자고 있어요.')
@@ -63,30 +83,3 @@ class HomePageTest(TestCase):
         }))
         response_decode = self.remove_csrf(response.content.decode())
         self.assertEqual(response_decode, expected_html)
-
-    def test_home_page_can_save_a_POST_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = '신규 작업 아이템'
-
-        response = home_page(request)
-        new_item = Item.objects.first()
-
-        self.assertEqual(Item.objects.all().count(), 1)
-        self.assertEqual(new_item.text, '신규 작업 아이템')
-
-    def test_home_page_redirects_after_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = '신규 작업 아이템'
-
-        response = home_page(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'],
-                         '/lists/the-only-list-in-the-world/')
-
-    def test_home_page_only_saves_items_when_necessary(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
