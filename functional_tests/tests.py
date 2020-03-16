@@ -40,6 +40,9 @@ class NewVisitorTest(LiveServerTestCase):
         # 엔터키를 치면 페이지가 갱신되고
         inputbox.send_keys(Keys.ENTER)
 
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+
         # 작업목록에 "1: 공작깃털 사기" 추가
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
@@ -65,5 +68,28 @@ class NewVisitorTest(LiveServerTestCase):
         # URL에 대한 설명도 추가
 
         # 작업목록이 그대로 있는지 확인
+
+        self.browser.quit()
+        self.browser = webdriver.Chrome(
+            '/Users/ieonsang/study/tdd/chromedriver')
+
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('공작깃털 사기', page_text)
+        self.assertNotIn('공작깃털을 이용해서 그물 만들기', page_text)
+        self.assertNotIn('그물 만들기', page_text)
+
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('우유 사기')
+        inputbox.send_keys(Keys.ENTER)
+
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, '/lists/.+')
+        self.assertNotEqual(francis_list_url, edith_list_url)
+
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('공작깃털 사기', page_text)
+        self.assertNotIn('공작깃털을 이용해서 그물 만들기', page_text)
+        self.assertIn('우유 사기', page_text)
 
         self.fail('Finish the Test!!!')
