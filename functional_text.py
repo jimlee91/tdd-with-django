@@ -1,6 +1,6 @@
 import unittest
 from selenium import webdriver
-from selenium.webdriver.common.keys import keys
+from selenium.webdriver.common.keys import Keys
 
 
 class NewVisitorTest(unittest.TestCase):
@@ -32,13 +32,14 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys('공작깃털 사기')
 
         # 엔터키를 치면 페이지가 갱신되고
-        inputbox.send_keys(keys.ENTER)
+        inputbox.send_keys(Keys.ENTER)
 
         # 작업목록에 "1: 공작깃털 사기" 추가
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
             any(row.text == '1: 공작깃털 사기' for row in rows),
+            "신규 추가작업이 테이블에 표시되지 않는다."
         )
 
         self.fail('Finish the Test!!!')
