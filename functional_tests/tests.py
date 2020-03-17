@@ -1,10 +1,27 @@
+import sys
 import unittest
-from django.contrib.staticfiles.testing import StaticLiveServerCase
+
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 
-class NewVisitorTest(StaticLiveServerCase):
+class NewVisitorTest(StaticLiveServerTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                return
+
+        super().setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
 
     def setUp(self):
         # 웹 브라우저 접속
@@ -22,7 +39,7 @@ class NewVisitorTest(StaticLiveServerCase):
         self.assertIn(row_text, [row.text for row in rows])
 
     def test_can_start_a_list_and_retrieve_it_later(self):
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # 브라우저의 타이틀과 헤더가 'To-Do'인지 확인
         self.assertIn('To-Do', self.browser.title)
@@ -73,7 +90,7 @@ class NewVisitorTest(StaticLiveServerCase):
         self.browser = webdriver.Chrome(
             '/Users/ieonsang/study/tdd/chromedriver')
 
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('공작깃털 사기', page_text)
         self.assertNotIn('공작깃털을 이용해서 그물 만들기', page_text)
