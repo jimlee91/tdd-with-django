@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,27 +12,43 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="/static/base.css">
   </head>
   <body>
-    <h1 id="title">
-      {% block header_text %}
-      {% endblock header_text %}
-    </h1>
+  <div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 jumbotron">
+            <div class="text-center">
+                <h1 id="title">
+                    {% block header_text %}
+                    {% endblock header_text %}
+                    </h1>
 
-    <div class="form">
-      <form action=" {% block form_action %}{% endblock form_action %} " method="POST">
-        {% csrf_token %}
-        <input
-          type="text"
-          id="id_new_item"
-          name="item_text"
-          placeholder="작업 아이템 입력"
-        />
-      </form>
+                    <div class="form">
+                    <form action=" {% block form_action %}{% endblock form_action %} " method="POST">
+                        {% csrf_token %}
+                        <input
+                        type="text"
+                        id="id_new_item"
+                        name="item_text"
+                        class="form-control form-control-lg"
+                        placeholder="작업 아이템 입력"
+                        />
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            {% block table %}
+            {% endblock table %}    
+        </div>
+    </div>
+  </div>
+    
 
-    {% block table %}
-    {% endblock table %}
+    
 
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
