@@ -76,5 +76,3 @@ class NewVisitorTest(FunctionalTest):
         self.assertNotIn('공작깃털 사기', page_text)
         self.assertNotIn('공작깃털을 이용해서 그물 만들기', page_text)
         self.assertIn('우유 사기', page_text)
-
-        self.fail('Finish the Test!!!')
