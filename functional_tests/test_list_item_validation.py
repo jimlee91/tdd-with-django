@@ -1,5 +1,7 @@
-from .base import FunctionalTest
+from django.utils.html import escape
 from selenium import webdriver
+
+from .base import FunctionalTest
 
 
 class ItemValidationTest(FunctionalTest):
@@ -12,7 +14,7 @@ class ItemValidationTest(FunctionalTest):
 
         # 페이지 새로고침 -> 빈 아이템을 등록할 수 없다는 에러 메시지
         error = self.browser.find_element_by_css_selector('.has-error')
-        self.assertEqual(error.self, "빈 아이템을 등록할 수 없습니다.")
+        self.assertEqual(error.text, "You can't have an empty list item")
 
         # 다른 아이템 입력 정상 자처리
         self.browser.find_element_by_id('id_new_item').send_keys('우유 사기\n')
@@ -27,7 +29,7 @@ class ItemValidationTest(FunctionalTest):
 
         # 에러표시
         error = self.browser.find_element_by_css_selector('.has-error')
-        self.assertEqual(error.self, "빈 아이템을 등록할 수 없습니다.")
+        self.assertEqual(error.test, "You can't have an empty list item")
 
         # 아이템 입력 -> 정상 작동
         inputbox = self.browser.find_element_by_id(

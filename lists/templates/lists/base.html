@@ -34,6 +34,11 @@
                         class="form-control form-control-lg"
                         placeholder="작업 아이템 입력"
                         />
+                        {% if error %}
+                            <div class="form-group has-error">
+                                <span class="help-block">{{ error }}</span>
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>
